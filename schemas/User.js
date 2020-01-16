@@ -9,6 +9,7 @@ let userSchema = new Schema({
   lastName: { type: String },
   email: { type: String, unique: true, required: true },
   phone: { type: String, unique: true },
+  active: { type: Boolean, default: false },
 })
 
 module.exports = mongoose.model("User", userSchema)

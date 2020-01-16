@@ -38,7 +38,7 @@ app.use(bodyParser.json())
 // 2) The base route for the REST api to create
 // 3) The path to a folder with mongoose-models 
 //    Please Note: This path must be absolute
-const pathToModelFolder = path.join(__dirname, 'mongoose-models');
+const pathToModelFolder = path.join(__dirname, 'schemas');
 app.use(theRest(express, '/api', pathToModelFolder));
  
  

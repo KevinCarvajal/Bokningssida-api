@@ -25,4 +25,28 @@ router.get("/api/users", async (req, res) => {
     }
   })
 
+  router.post("/api/users", async (req, res) => {
+    // we should check that the same username does
+    // not exist... let's save that for letter
+    if (typeof req.body.password !== "string" || req.body.password.length < 6) {
+      res.json({ error: "Password too short" })
+      return
+    }
+  
+    let role = "user"
+    if (req.session.user && req.session.user.role === "admin")
+      role = req.body.role || "user"
+  
+    let user = new User({
+      ...req.body,
+      role,
+    })
+    let error
+    let resultFromSave = await user.save().catch(err => (error = err + ""))
+    res.json(error ? { error } : { success: "User created" })
+    console.log(error);
+  
+  })
+  
+
   module.exports = router
