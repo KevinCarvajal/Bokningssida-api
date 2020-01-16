@@ -1,0 +1,20 @@
+{
+    "apiPath": "/api",
+    "rules": {
+      "users": {
+        "admin": "all",
+        "visitor": "post"
+      },
+      "login": {
+        "admin": "get delete",
+        "user": "get delete",
+        "visitor": "get post"
+      },
+      "password": {
+        "admin": "put",
+        "user": "put",
+        "visitor": "put"
+      }
+    }
+  }
+  

@@ -1,6 +1,7 @@
 // Modules
 const path = require('path');
 const express = require('express');
+const bodyParser = require("body-parser")
 const mongoose = require('mongoose');
 const theRest = require('the.rest');
  
@@ -11,8 +12,25 @@ mongoose.connect('mongodb://localhost/db-name', {
 });
 const db = mongoose.connection;
  
+//Routes
+const userRoutes = require("./api/userRoutes")
+
+
+//ACL
+const aclRules = require("./config/acl-rules.json")
+const acl = require("./middleware/acl")
+
+
+
 // Create an Express server
 const app = express();
+
+app.use(
+    userRoutes
+)
+
+app.use(bodyParser.json())
+
  
 // ..and install the.rest as middleware
 // Arguments/configuration:
