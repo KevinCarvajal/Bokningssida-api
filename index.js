@@ -1,46 +1,85 @@
 // Modules
-const path = require('path');
-const express = require('express');
+const express = require("express")
 const bodyParser = require("body-parser")
-const mongoose = require('mongoose');
-const theRest = require('the.rest');
+const session = require("express-session")
+const path = require('path')
+const sse = require('easy-server-sent-events')
  
-// Connect to MongoDB via Mongoose
-mongoose.connect('mongodb://localhost/db-name', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-const db = mongoose.connection;
- 
+// DB
+const MongoStore = require("connect-mongo")(session)
+const settings = require("./config/settings.json")
+const connectToDb = require("./config/db")
+
 //Routes
 const userRoutes = require("./api/userRoutes")
+const loginRoutes = require("./api/loginRoutes")
 
 
 //ACL
 const aclRules = require("./config/acl-rules.json")
 const acl = require("./middleware/acl")
 
+//Cron
+const cron = require("node-cron")
+const Link = require("./schemas/Link")
 
 
-// Create an Express server
-const app = express();
+connectToDb()
 
-app.use(
-    userRoutes
-)
+const app = express()
 
 app.use(bodyParser.json())
 
+global.salt = settings.salt
+
+app.use(
+  session({
+    secret: settings.cookieSecret,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false },
+    store: new MongoStore({
+      mongooseConnection: global.db,
+    }),
+  }),
+)
+
+const options = {
+  endpoint: '/api/sse',
+  script: '/sse.js'
+}
+
+const {SSE, send} = sse(options)
+app.use(SSE) 
+global.sendSSE = send
+
+app.use(acl(aclRules))
+
+app.use(
+  userRoutes,
+  loginRoutes
+)
  
-// ..and install the.rest as middleware
-// Arguments/configuration:
-// 1) The express library
-// 2) The base route for the REST api to create
-// 3) The path to a folder with mongoose-models 
-//    Please Note: This path must be absolute
-const pathToModelFolder = path.join(__dirname, 'schemas');
-app.use(theRest(express, '/api', pathToModelFolder));
- 
- 
-// Listen on port 5000
-app.listen(5000, () => console.log('Listening on port 5000'));
+cron.schedule("* * * * *", async function () {
+  let allLinks = await Link.find()
+  allLinks.map(link => {
+    if (Date.now() - 3600000 > link.time && link.type === "reset") {
+      link.delete()
+    }
+  })
+})
+
+app.listen(5000, () => console.log(`Booking Server is on port 5000`))
+
+// if on server serve static build files
+if (__dirname === '/var/www/Bokningssida-api') {
+  app.use(express.static(path.resolve(__dirname, '../Examens/build')))
+  app.get('/*', function (req, res) {
+    res.sendFile(path.resolve(__dirname, '../Examens/build/index.html'), function (err) {
+      if (err) {
+        res.status(500).send(err)
+      }
+    })
+  })
+  console.log("I am the server. I serve a static build!")
+}

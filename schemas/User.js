@@ -10,6 +10,7 @@ let userSchema = new Schema({
   email: { type: String, unique: true, required: true },
   phone: { type: String, unique: true },
   active: { type: Boolean, default: false },
+  darkMode: { type: Boolean, default: false },
 })
 
 module.exports = mongoose.model("User", userSchema)

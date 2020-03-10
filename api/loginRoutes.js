@@ -1,4 +1,5 @@
 const express = require("express")
+const encryptPassword = require('../config/encryptPassword')
 const User = require("../schemas/User")
 
 const router = express.Router()
