@@ -1,0 +1,41 @@
+{
+  "name": "bokningssida-api",
+  "version": "1.0.0",
+  "description": "Api för bokningssidan.",
+  "main": "index.js",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "connect-mongo": "^3.1.0",
+    "cors": "^2.8.5",
+    "easy-server-sent-events": "^1.0.14",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "mongodb": "^3.3.3",
+    "mongoose": "^5.7.7",
+    "node-cron": "^2.0.3",
+    "node-schedule": "^1.3.2",
+    "nodemailer": "^6.3.1",
+    "nodemon": "^1.19.4",
+    "open": "^6.4.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "uuid": "^3.3.3",
+    "web-push": "^3.4.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinCarvajal/Bokningssida-api.git"
+  },
+  "author": "Kevin Carvajal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KevinCarvajal/Bokningssida-api/issues"
+  },
+  "homepage": "https://github.com/KevinCarvajal/Bokningssida-api#readme"
+}
